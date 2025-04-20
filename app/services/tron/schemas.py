@@ -6,11 +6,15 @@ from pydantic import BaseModel, Field, ConfigDict
 class TronAddressPostRequest(BaseModel):
     address: str = Field(min_length=34, max_length=34, description="TRON address (optional)")
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class TronAddressGetRequest(BaseModel):
     address: str | None = Field(default=None, min_length=34, max_length=34, description="TRON address")
     page: int = Field(default=1, ge=1, description="Page number")
     limit: int = Field(default=10, ge=1, le=100, description="Number of results")
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Don't use inheritance to clearly define the order of fields.
@@ -20,3 +24,5 @@ class TronAddressResponse(BaseModel):
     balance: float = Field(description="Address balance")
     bandwidth: int = Field(description="Address bandwidth")
     energy: int = Field(description="Address energy")
+
+    model_config = ConfigDict(from_attributes=True)

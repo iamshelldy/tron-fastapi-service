@@ -80,4 +80,4 @@ async def test_post_tron_incorrect_input(override_dependencies, async_client):
 
     response = await async_client.post("/tron/", json={"address": "stringstringstringstringstringstri"})
     assert response.status_code == 400
-    assert response.json() == {'detail': 'Incorrect TRON Address'}
+    assert response.json() == {"detail": "Incorrect TRON Address"}

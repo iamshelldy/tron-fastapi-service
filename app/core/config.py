@@ -22,3 +22,8 @@ class Config(BaseConfig):
     TRON_API_KEY: SecretStr
 
 config = Config()
+
+
+def get_db_url():
+    return (f"postgresql+asyncpg://{config.DB_USER}:{config.DB_PASSWORD.get_secret_value()}@"
+            f"{config.DB_HOST}:{config.DB_PORT}/{config.DB_NAME}")

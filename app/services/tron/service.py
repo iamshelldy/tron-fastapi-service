@@ -1,5 +1,6 @@
 import logging
 
+from asyncpg import ConnectionDoesNotExistError
 from fastapi import Depends
 from httpx import HTTPStatusError
 from tronpy.exceptions import BadAddress
@@ -7,7 +8,7 @@ from tronpy.exceptions import BadAddress
 from app.core.config import config
 from app.services.tron.errors import BadTronAddressError, InternalServerError
 from app.services.tron.repository.base import AbstractRepository
-from app.services.tron.repository.mock import get_repository
+from app.services.tron.repository.db import get_repository
 from app.services.tron.schemas import TronAddressGetRequest, TronAddressPostRequest
 from app.services.tron.utils import get_address_info
 
@@ -22,10 +23,22 @@ class TronService:
     async def get(cls, request: TronAddressGetRequest):
         offset = (request.page - 1) * request.limit
 
-        if request.address:
-            return await cls.repo.get_by_address(request.address, offset, request.limit)
-        else:
-            return await cls.repo.get_all(offset, request.limit)
+        try:
+            if request.address:
+                return await cls.repo.get_by_address(request.address, offset, request.limit)
+            else:
+                return await cls.repo.get_all(offset, request.limit)
+
+        except ConnectionDoesNotExistError as e:
+            logger.error(
+                f"{type(e).__name__}: Cannot connect to database. "
+                f"Check your variables in .env file."
+            )
+
+        except Exception as e:
+            logger.error(e)
+
+        raise InternalServerError
 
     @classmethod
     async def post(cls, request: TronAddressPostRequest):
