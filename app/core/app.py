@@ -1,11 +1,13 @@
 from fastapi import FastAPI
 
+from app.core.logger import init_logger
 from app.services.tron.router import router as tron_router
 
 
 def get_app() -> FastAPI:
-    app = FastAPI(title="Tron FastAPI Service")
+    init_logger()
 
+    app = FastAPI(title="Tron FastAPI Service")
     app.include_router(tron_router)
 
     return app

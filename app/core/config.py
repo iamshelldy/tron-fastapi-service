@@ -1,11 +1,10 @@
-import os
 from pathlib import Path
 
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-ENV_FILE = Path(__file__).parents[2].joinpath('.env')
+ENV_FILE = Path(__file__).parents[2].joinpath(".env")
 
 
 class BaseConfig(BaseSettings):
